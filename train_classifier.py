@@ -1,28 +1,28 @@
-import data_preparation_func
+import train_data
 import upload_train
 # '''========================Preprocessing flow of document upload, ocr, merging before labelling=========================='''
 '''----------------1.Pdf spliting------------------'''
-# data_preparation_func.split_pdf(r"C:\Users\kkhairnar\comprehend-testing\New folder", r"C:\Users\kkhairnar\comprehend-testing\new")
+# train_data.split_pdf(r"C:\Users\kkhairnar\comprehend-testing\New folder", r"C:\Users\kkhairnar\comprehend-testing\new")
 # pdf_path = input("Enter pdf folder path:")
 # output_path = input("Enter destination folder path:")
-# data_preparation_func.split_pdf(pdf_path, output_path)
+# train_data.split_pdf(pdf_path, output_path)
 
 '''----------------2.Upload Pdf file to S3------------------'''
-# data_preparation_func.upload_pdf_to_s3("split pdf file/", 'vstest-py')
+# train_data.upload_pdf_to_s3("split pdf file/", 'vstest-py')
 pdf_folder = input("Enter pdf folder path end with slash(/): ")
 bucket = input("Enter bucket name: ")
-data_preparation_func.upload_pdf_to_s3(pdf_folder, bucket)
+train_data.upload_pdf_to_s3(pdf_folder, bucket)
 
 '''----------------3.OCR using aws textract API------------------'''
-# data_preparation_func.adr("vstest-py", "csvfile.csv")
+# train_data.adr("vstest-py", "csvfile.csv")
 # adr = input("Enter Data Bucket Name to extract: ")
 # adr1 = input("Enter output file name with extension(.csv): ")
-# data_preparation_func.adr(adr, adr1)
+# train_data.adr(adr, adr1)
 # '''----------------4.Merging row of spliting pdf file in csv------------------'''
-# # data_preparation_func.file_merge(r'C:\Users\kkhairnar\pyfunc\csvfile.csv', r'C:\Users\kkhairnar\pyfunc\csvfile1.csv')
+# # train_data.file_merge(r'C:\Users\kkhairnar\pyfunc\csvfile.csv', r'C:\Users\kkhairnar\pyfunc\csvfile1.csv')
 # path1 = input("enter path of output file: ")
 # path2 = input("enter path to store merged file with name: ")
-# data_preparation_func.file_merge(path1, path2)
+# train_data.file_merge(path1, path2)
 
 # # '''===========================Building and training classifier and performace visualization ==========================='''
 
