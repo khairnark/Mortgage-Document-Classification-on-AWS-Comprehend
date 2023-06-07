@@ -1,6 +1,7 @@
 # Mortgage-Document-Classification-on-AWS-Comprehend
 Mortgage Document Classification is custom classification to organize US Mortgage documents into categories (classes) using AWS.
 We can trained 25 categories with comprehend classifier.
+
 Data collection:
 1.Collect Pdf file of US Mortgage documents
 2.Identify the multipage pdf file or single page.
