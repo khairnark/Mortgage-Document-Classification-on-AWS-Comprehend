@@ -1,3 +1,4 @@
+#import required python packages
 import boto3
 import tarfile
 from IPython.display import JSON
@@ -8,12 +9,15 @@ from datetime import datetime, timezone
 import json
 import seaborn as sn
 import matplotlib.pyplot as plt
+
+#Upload zipped training data set to AWS S3 bucket
 def upload_data(tarfile, bucket_name, filename):
     s3 = boto3.client('s3')
     with open(tarfile, "rb") as f:
             s3.upload_fileobj(f,bucket_name, tarfile)
             print("uploaded")
 
+#Unzipped or extract training dataset on AWS
 def extract_train_data(dataset_bucket_name, dataset_object_name):
     # dataset_bucket_name = 'mytextdemo-a2i'
     # dataset_object_name = 'prod10-train.tar.gz'
@@ -26,34 +30,7 @@ def extract_train_data(dataset_bucket_name, dataset_object_name):
     tar.close()
     print("extracted")
 
-
-# def dataset(src_train_file):
-#     # src_train_file='prod10-train/train_dataset.csv'
-#     with open(src_train_file) as myfile:
-#         print(myfile)
-#         head = [next(myfile) for x in range(5)]
-#     JSON(head)
-#     trainFrame = pd.read_csv(src_train_file, header=None)
-#     print('Number of documents: {}'.format(len(trainFrame.index)))
-#     # Count unique values 
-#     print(trainFrame[0].value_counts())
-    
-
-# def item_per_class(src_train_file, MAXITEMPERCLASS):
-# # MAXITEMPERCLASS=100
-# # Keeping MAXITEMPERCLASS for each class
-#     trainFrame = pd.read_csv(src_train_file, header=None)
-#     for i in range(1, 10):
-#         num = len(trainFrame[trainFrame[0] == i])
-#         dropnum = num - MAXITEMPERCLASS
-#         indextodrop = trainFrame[trainFrame[0] == i].sample(n=dropnum).index
-#         trainFrame.drop(indextodrop, inplace=True)
-
-#     print('Number of documents: {}'.format(len(trainFrame.index)))
-
-#     # Count unique values 
-#     trainFrame[0].value_counts()
-
+#check the total classes in training dataset
 def dataset_item(src_train_file, MAXITEMPERCLASS):
         # src_train_file='prod10-train/train_dataset.csv'
         # src_test_file='AWScomp/test_data.csv'
@@ -78,6 +55,7 @@ def dataset_item(src_train_file, MAXITEMPERCLASS):
         # Count unique values 
         print(trainFrame[0].value_counts())
 
+#Class mapping
 def class_mapping(src_train_file, mapping, comprehend_train_file, bucket_name):
     trainFrame = pd.read_csv(src_train_file, header=None)
     # trainFrame[0] = trainFrame[0].apply(mapping.get)
@@ -96,6 +74,7 @@ def class_mapping(src_train_file, mapping, comprehend_train_file, bucket_name):
     train_object_name_s3uri = 's3://{0}/{1}'.format(bucket_name, train_object_name)
     print('File uploaded to s3, uri: ' + train_object_name_s3uri)
 
+#Build document classifier on AWS Comprehend
 def build_classifier(role_arn, Policy_ARN, Bucket_ARN, document_classifier_name, comprehend_train_file):
     # role_arn = "arn:aws:iam::344021507737:role/ComprehendExperimentBucketAccessRole"
     # Policy_ARN: "arn:aws:iam::344021507737:policy/ComprehendExperimentDataAccessRolePolicy"
@@ -133,6 +112,7 @@ def build_classifier(role_arn, Policy_ARN, Bucket_ARN, document_classifier_name,
         
     print('Document Classifier ARN: ' + document_classifier_arn)
 
+#Train AWS comprehend classifier
 def train_classifier(document_classifier_arn):
     client = boto3.client('comprehend')
     response = None
@@ -168,7 +148,8 @@ def train_classifier(document_classifier_arn):
         accuracy = response['DocumentClassifierProperties']['ClassifierMetadata']['EvaluationMetrics']['Accuracy']
         print('Classifier Accuracy: {0:.{1}f}'.format(accuracy, 2))
         print('Output Data Config: {}'.format(output_data_config_s3uri))
-
+		
+#Plot confusion matrix to check postive negative and negative positive values
 def ConfusionMatrix(confusion_matrix_file,figsize):
     # confusion_matrix_file = r'C:\Users\kkhairnar\comprehend-testing\prod10-train\output\confusion_matrix.json'
     data = None
