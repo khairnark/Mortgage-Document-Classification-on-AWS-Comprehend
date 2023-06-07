@@ -1,3 +1,4 @@
+#Import required python packages
 import sys
 # !{sys.executable} -m pip install pandas==1.1.3
 import boto3
@@ -11,7 +12,7 @@ from botocore.exceptions import ClientError
 import time
 from datetime import datetime, timezone
 
-   # Preparation of the validation set
+#Preparation of the validation set
 def testDataset(src_test_file, MAXITEM):
     src_test_file = r'C:\Users\kkhairnar\comprehend-testing\testdataset.csv'
     MAXITEM = 3
@@ -36,7 +37,8 @@ def testDataset(src_test_file, MAXITEM):
     validationFrame['document'] = validationFrame['document'].str.replace('<br />', '\n', regex=False)
     validationFrame['document'] = validationFrame['document'].str.replace('\n', '', regex=False)
     validationFrame.head(n=5)
-
+	
+#Analyse test data
 def finalTestDataset(comprehend_test_file):
     comprehend_test_file='testdataset.csv'
     validationFrame.to_csv(path_or_buf=comprehend_test_file,
@@ -44,6 +46,7 @@ def finalTestDataset(comprehend_test_file):
                         index=False,
                         encoding='utf-8')
 
+#Upload test data to S3 bucket
 def uploadTestDataset(src_test_file, comprehend_test_file, bucket_name):
     src_test_file = r'C:\Users\kkhairnar\comprehend-testing\testdataset.csv'
     comprehend_test_file = 'test11.csv'
@@ -58,6 +61,7 @@ def uploadTestDataset(src_test_file, comprehend_test_file, bucket_name):
     test_object_name_s3uri = 's3://{0}/{1}'.format(bucket_name, test_object_name)
     print('File uploaded to s3, uri: ' + test_object_name_s3uri)
 
+#analysis job creation  on aws comprehend
 def analysisJob(document_classifier_arn, role_arn):    
     document_classifier_arn = "arn:aws:comprehend:us-east-1:344021507737:document-classifier/adr20new-classifier"
     role_arn = "arn:aws:iam::344021507737:role/ComprehendExperimentBucketAccessRole"
@@ -82,7 +86,8 @@ def analysisJob(document_classifier_arn, role_arn):
     job_id = response['JobId']
         
     print('Job Id: ' + job_id)
-
+	
+#Generate prediction from analysis job
 def prediction(job_id):
     client = boto3.client('comprehend')
     response = None
@@ -112,7 +117,8 @@ def prediction(job_id):
     print('Job status: ' + status)
     print('Elasped time: {}'.format(end_datetime - submit_datetime))
     print('Output S3 Uri: {}'.format(test_output_s3uri))
-
+	
+#post-processing final output
 def predFinal(csvPath, predJsonPath, finalPredPath):
     data = []
     doc_name = []
@@ -138,11 +144,3 @@ def predFinal(csvPath, predJsonPath, finalPredPath):
     # df1.to_csv(r'C:\Users\kkhairnar\comprehend-testing\Newflow\ocrtest20zzz_predictions.csv',index = False)
     df1.to_csv(finalPredPath,index = False)
     print("Prediction Generated!")
-
-
-testDataset(src_test_file, MAXITEM)
-finalTestDataset(comprehend_test_file)
-uploadTestDataset(src_test_file, comprehend_test_file, bucket_name)
-analysisJob(document_classifier_arn, role_arn)
-prediction(job_id)
-predFinal(csvPath, predJsonPath, finalPredPath)
