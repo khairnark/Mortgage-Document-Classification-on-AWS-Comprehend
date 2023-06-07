@@ -1,3 +1,4 @@
+#import required python packages
 import boto3
 from trp import Document
 import pandas as pd
