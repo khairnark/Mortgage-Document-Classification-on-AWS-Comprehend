@@ -144,3 +144,10 @@ def predFinal(csvPath, predJsonPath, finalPredPath):
     # df1.to_csv(r'C:\Users\kkhairnar\comprehend-testing\Newflow\ocrtest20zzz_predictions.csv',index = False)
     df1.to_csv(finalPredPath,index = False)
     print("Prediction Generated!")
+	
+testDataset(src_test_file, MAXITEM)
+finalTestDataset(comprehend_test_file)
+uploadTestDataset(src_test_file, comprehend_test_file, bucket_name)
+analysisJob(document_classifier_arn, role_arn)
+prediction(job_id)
+predFinal(csvPath, predJsonPath, finalPredPath)
