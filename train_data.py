@@ -14,9 +14,10 @@ import os
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from botocore.exceptions import NoCredentialsError
 
+#convert multipage pdf to single page pdf file
 def split_pdf(pdf_path, output_path):
-    # pdf_path = r'C:\Users\kkhairnar\comprehend-testing\New folder'
-    # output_path = r'C:\Users\kkhairnar\comprehend-testing\new'
+    # pdf_path = r'MULTIPAGE PDF FOLDER PATH'
+    # output_path = r'PATH OF NEW FOLDER TO SAVE OUTPUT'
     for root, dirs, files in os.walk(pdf_path):
         for filename in files:
             if filename.endswith('.pdf'):
@@ -32,8 +33,8 @@ def split_pdf(pdf_path, output_path):
                         print('finished writing : ', output_pdf)
                     outputStream.close()
 
+#Upload pdf data to AWS S3 bucket
 def upload_pdf_to_s3(pdf_folder, bucket_name):
-
     def upload_to_aws(local_file, bucket, s3_file):
         s3 = boto3.client('s3')
         try:
@@ -55,7 +56,7 @@ def upload_pdf_to_s3(pdf_folder, bucket_name):
             print(image_path)
             uploaded = upload_to_aws(image_path, bucket_name,(file))  
 
-    
+#Extract text from pdf file uploaded in S3 bucket
 def adr(s3BucketName, csv_name):
     # s3BucketName = "textract-a2i19"
     s3 = boto3.resource('s3')
@@ -76,11 +77,7 @@ def adr(s3BucketName, csv_name):
                 res1 = re.sub(r'(?:^| )\w(?:$| )', ' ', number).strip()    
                 res2 = re.sub(' +', ' ', res1)    
                 res3 = ' '.join([''.join(i) for i in res2.split() if i.lower() not in stop_words])
-                res4 = res3.replace("/n", "")
-    # #           Deduplication           
-    #             words = res4.split(" ")
-    #             my_string = (list(set(words)))
-    #             my_string1 = ' '.join(my_string)           
+                res4 = res3.replace("/n", "")          
         s3_client = boto3.client('s3')
         filename1 = s3_file.key
         print(filename1)
@@ -100,7 +97,7 @@ def adr(s3BucketName, csv_name):
             print("Error detected:", filename1)
             pass
 
-
+#Merge row of csv file
 def file_merge(csv_path, output_csv_path):
     # csv_path = r'C:\Users\kkhairnar\comprehend-testing\adr-prod10.csv'
     df = pd.read_csv(csv_path, encoding= 'unicode_escape')
