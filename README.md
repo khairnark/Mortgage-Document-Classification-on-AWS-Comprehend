@@ -33,3 +33,9 @@ Prediction on Test data set:
 7. create analysis job to generate prediction.
 8. Prediction will be generate as JSON file.
 9. post-process on JSON file and convert it into csv file to get final output with categories, confidnece score.
+
+Instrustion to run python file:
+1. First run train_data.py file.
+2. Run upload_train.py file.
+3. Run train_classifier.py file.
+4. Run test.py file for prediction.
