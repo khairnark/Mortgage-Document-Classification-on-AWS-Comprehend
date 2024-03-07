@@ -1,41 +1,42 @@
-# Mortgage-Document-Classification-on-AWS-Comprehend
-Mortgage Document Classification is custom classification to organize US Mortgage documents into categories (classes) using AWS.
-We can trained 25 categories with comprehend classifier.
+# Mortgage Document Classification
 
-Data collection:
-1. Collect Pdf file of US Mortgage documents.
-2. Identify the multipage pdf file or single page.
-3. Split Multipage pdf file with same file name with page no.
-(E.G.,Multipage pdf file name: "Loan Application. pdf" convert into first page: "Loan Application_1.pdf", "Loan Application_2.pdf",.,.,., "Loan Application_n.pdf").
-4. Upload pdf file to AWS S3 Bucket.
+Mortgage Document Classification is a specialized system designed to categorize US Mortgage documents using AWS Comprehend Classifier. With the capability to train 25 distinct categories, this tool efficiently organizes mortgage documents into relevant classes.
 
-Training Data Prepartion:
-1. Extract text from pdf file and save to csv file. first column will be name filename and second column will be extracted text.
-2. Merge csv row as per filename to merge splited file into merged file.
-3. Create txt file with categories
-4. label the train data as per categories in txt file by replacing category into specific number.
-5. Save txt file and final csv file into tar zip file.
-6. Upload tar zip file on AWS S3 bucket.
+## Data Collection
 
-Build and train classifier:
-1. unzip or extract tar zip file.
-2. check total items on csv file per class and provide the number in MAXITEMPERCLASS.
-3. Use train data to build aws comprehend classifier.
-4. Create job to train aws comprehend classifier.
+- Gather PDF files of US Mortgage documents.
+- Identify multipage PDF files and split them accordingly, naming each page with its corresponding page number.
+- Upload the PDF files to an AWS S3 Bucket.
 
-Prediction on Test data set:
-1. Collect Pdf file of US Mortgage documents.
-2. Split Multipage pdf file with same file name with page no.
-3. Upload pdf file to AWS S3 Bucket.
-4. Extract text from pdf file and save to csv file
-5. Save test dataset is the csv file with only one column of extracted text.
-6. Upload to the S3 Bucket.
-7. create analysis job to generate prediction.
-8. Prediction will be generate as JSON file.
-9. post-process on JSON file and convert it into csv file to get final output with categories, confidnece score.
+## Training Data Preparation
 
-Instrustion to run python file:
-1. First run train_data.py file.
-2. Run upload_train.py file.
-3. Run train_classifier.py file.
-4. Run test.py file for prediction.
+- Extract text from PDF files and save them into a CSV file, with the first column representing the filename and the second column containing the extracted text.
+- Merge CSV rows based on filename to consolidate split files into a single merged file.
+- Create a TXT file containing categories and label the training data accordingly.
+- Save the TXT file and final CSV file into a tar zip file.
+- Upload the tar zip file to an AWS S3 bucket.
+
+## Build and Train Classifier
+
+- Unzip or extract the tar zip file.
+- Check the total items in the CSV file per class and specify the number as MAXITEMPERCLASS.
+- Utilize the training data to construct the AWS Comprehend Classifier.
+- Create a job to train the AWS Comprehend Classifier.
+
+## Prediction on Test Dataset
+
+- Collect PDF files of US Mortgage documents for testing.
+- Split multipage PDF files and upload them to an AWS S3 Bucket.
+- Extract text from the PDF files and save them into a CSV file.
+- Save the test dataset as a CSV file with only one column of extracted text.
+- Upload it to the S3 Bucket.
+- Create an analysis job to generate predictions.
+- Predictions will be generated as JSON files.
+- Perform post-processing on the JSON files to convert them into CSV files, providing the final output with categories and confidence scores.
+
+## Instructions to Run Python Files
+
+1. Execute `train_data.py` file.
+2. Run `upload_train.py` file.
+3. Execute `train_classifier.py` file.
+4. Run `test.py` file for prediction.
